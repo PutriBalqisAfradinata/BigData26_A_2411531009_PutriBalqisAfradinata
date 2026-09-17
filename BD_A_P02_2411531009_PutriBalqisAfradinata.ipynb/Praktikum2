@@ -1,0 +1,1752 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOlgJ+o2VQyZd5ojbMt9mjE",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/PutriBalqisAfradinata/BigData26_A_2411531009_PutriBalqisAfradinata/blob/main/BD_A_P02_2411531009_PutriBalqisAfradinata.ipynb/Praktikum2\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### **=== PRAKTIKUM 2 BIG DATA ===**"
+      ],
+      "metadata": {
+        "id": "pq0d4Q3eDJRC"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "install faker"
+      ],
+      "metadata": {
+        "id": "CB90sRGIF_FS"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "b50DAGFwBsOA",
+        "outputId": "824cd369-afcb-4f84-d8f4-3312dfbf6080"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\u001b[?25l   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m0.0/2.1 MB\u001b[0m \u001b[31m?\u001b[0m eta \u001b[36m-:--:--\u001b[0m\r\u001b[2K   \u001b[91m━━━━━━\u001b[0m\u001b[91m╸\u001b[0m\u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m0.3/2.1 MB\u001b[0m \u001b[31m10.2 MB/s\u001b[0m eta \u001b[36m0:00:01\u001b[0m\r\u001b[2K   \u001b[91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[91m╸\u001b[0m \u001b[32m2.1/2.1 MB\u001b[0m \u001b[31m31.9 MB/s\u001b[0m eta \u001b[36m0:00:01\u001b[0m\r\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m2.1/2.1 MB\u001b[0m \u001b[31m23.0 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25h"
+          ]
+        }
+      ],
+      "source": [
+        "!pip install faker -q"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-1. Import Library"
+      ],
+      "metadata": {
+        "id": "yAwZEM3vGT2x"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "from faker import Faker\n",
+        "import random"
+      ],
+      "metadata": {
+        "id": "3zjEhabaGU_7"
+      },
+      "execution_count": 4,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from google.colab import drive\n",
+        "drive.mount(\"/content/drive\")             # ikuti dialog izin yang muncul\n",
+        "\n",
+        "import os\n",
+        "DIR_KERJA  = \"/content/data\"                                      # sementara, cepat\n",
+        "DIR_SIMPAN = \"/content/drive/MyDrive/BigData/Praktikum2\"         # permanen\n",
+        "os.makedirs(DIR_KERJA, exist_ok=True)\n",
+        "os.makedirs(DIR_SIMPAN, exist_ok=True)\n",
+        "print(os.listdir(DIR_SIMPAN))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-6rSfQMtWvwI",
+        "outputId": "1e1d220f-e0fe-43b2-b7c7-c4995baccb40"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Mounted at /content/drive\n",
+            "[]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-2. Membuat Dataset Sintetis"
+      ],
+      "metadata": {
+        "id": "drEr9jOeHInK"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "SEED = 42\n",
+        "np.random.seed(SEED)\n",
+        "random.seed(SEED)\n",
+        "fake = Faker(\"id_ID\")\n",
+        "Faker.seed(SEED)\n",
+        "\n",
+        "N = 500\n",
+        "kategori_produk = [\"Elektronik\", \"Fashion\", \"Kesehatan\", \"Rumah Tangga\", \"Olahraga\",\n",
+        "                   \"Buku\"]\n",
+        "metode_bayar = [\"Transfer Bank\", \"E-Wallet\", \"COD\", \"Kartu Kredit\"]\n",
+        "\n",
+        "rows = []\n",
+        "for i in range(1, N + 1):\n",
+        "    trx_id = f\"TRX{i:05d}\"\n",
+        "    nama_pelanggan = fake.name()\n",
+        "    produk = fake.word().capitalize() + \" \" + random.choice([\"Pro\", \"Lite\", \"Max\", \"Basic\"])\n",
+        "    kategori = random.choice(kategori_produk)\n",
+        "    harga_dasar = random.choice([15000, 25000, 50000, 75000, 120000, 250000, 500000,\n",
+        "                                 1200000])\n",
+        "    qty = random.randint(1, 5)\n",
+        "\n",
+        "    # Variasi format harga: angka polos, ada \"Rp\", ada desimal \".0\", ada spasi\n",
+        "    harga_variants = [\n",
+        "        str(harga_dasar),\n",
+        "        f\"Rp{harga_dasar:,}\".replace(\",\", \".\"),\n",
+        "        f\"{harga_dasar}.0\",\n",
+        "        f\" {harga_dasar} \",\n",
+        "    ]\n",
+        "    harga = random.choice(harga_variants)\n",
+        "\n",
+        "    # Variasi format tanggal: ISO, DD/MM/YYYY, DD-MM-YYYY\n",
+        "    tgl = fake.date_between(start_date=\"-90d\", end_date=\"today\")\n",
+        "    tgl_variants = [tgl.strftime(\"%Y-%m-%d\"), tgl.strftime(\"%d/%m/%Y\"),\n",
+        "                    tgl.strftime(\"%d-%m-%Y\")]\n",
+        "    tanggal = random.choice(tgl_variants)\n",
+        "\n",
+        "    metode = random.choice(metode_bayar)\n",
+        "    if random.random() < 0.3:\n",
+        "        metode = metode.lower()\n",
+        "\n",
+        "    if random.random() < 0.2:\n",
+        "        kategori = kategori.upper() + \" \"\n",
+        "\n",
+        "    kota = fake.city()\n",
+        "    rating = random.choice([1, 2, 3, 4, 5, None, None])  # rating opsional\n",
+        "\n",
+        "    rows.append({\n",
+        "        \"transaction_id\": trx_id,\n",
+        "        \"customer_name\": nama_pelanggan,\n",
+        "        \"product_name\": produk.strip(),\n",
+        "        \"category\": kategori,\n",
+        "        \"price\": harga,\n",
+        "        \"quantity\": qty,\n",
+        "        \"payment_method\": metode,\n",
+        "        \"transaction_date\": tanggal,\n",
+        "        \"shipping_city\": kota,\n",
+        "        \"rating\": rating,\n",
+        "    })\n",
+        "\n",
+        "df = pd.DataFrame(rows)\n",
+        "\n",
+        "# Suntikkan missing value pada beberapa kolom\n",
+        "for col, frac in [(\"customer_name\", 0.02), (\"shipping_city\", 0.03), (\"payment_method\", 0.015)]:\n",
+        "    idx = df.sample(frac=frac, random_state=SEED).index\n",
+        "    df.loc[idx, col] = np.nan\n",
+        "\n",
+        "# Duplikasi 15 baris (mensimulasikan transaksi yang tercatat dua kali)\n",
+        "dup_rows = df.sample(n=15, random_state=SEED)\n",
+        "\n",
+        "df = pd.concat([df, dup_rows], ignore_index=True)\n",
+        "\n",
+        "df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)\n",
+        "\n",
+        "df.to_csv(\"transaksi_mentah.csv\", index=False)\n",
+        "print(\"Jumlah baris:\", len(df))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "tytXter6HJSy",
+        "outputId": "9b668f3e-1da3-4a2f-be5f-40a3ac0fe95b"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Jumlah baris: 515\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.head()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "tLxcm-p1R-Wg",
+        "outputId": "b2fa6666-c971-4cb7-d609-2de67a2e577d"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "  transaction_id           customer_name       product_name   category  \\\n",
+              "0       TRX00305         Ophelia Hartati            Quo Max    Fashion   \n",
+              "1       TRX00500      Cut Maya Wijayanti      Delectus Lite   Olahraga   \n",
+              "2       TRX00442  Dr. Ridwan Utama, M.Pd        Animi Basic  Kesehatan   \n",
+              "3       TRX00154     Viman Suwarno, S.H.  Consectetur Basic   FASHION    \n",
+              "4       TRX00074                     NaN           Eius Max    Fashion   \n",
+              "\n",
+              "       price  quantity payment_method transaction_date shipping_city  rating  \n",
+              "0    500000          5       E-Wallet       14/07/2026        Blitar     NaN  \n",
+              "1   1200000          5            COD       10-07-2026  Lubuklinggau     2.0  \n",
+              "2  Rp250.000         2            COD       2026-08-26   Probolinggo     3.0  \n",
+              "3   Rp75.000         2            COD       2026-07-28          Tual     NaN  \n",
+              "4    25000.0         2            NaN       2026-07-02           NaN     3.0  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-f6cc00b5-46d2-4f1c-b2a0-e00fccd8ce02\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>transaction_id</th>\n",
+              "      <th>customer_name</th>\n",
+              "      <th>product_name</th>\n",
+              "      <th>category</th>\n",
+              "      <th>price</th>\n",
+              "      <th>quantity</th>\n",
+              "      <th>payment_method</th>\n",
+              "      <th>transaction_date</th>\n",
+              "      <th>shipping_city</th>\n",
+              "      <th>rating</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>TRX00305</td>\n",
+              "      <td>Ophelia Hartati</td>\n",
+              "      <td>Quo Max</td>\n",
+              "      <td>Fashion</td>\n",
+              "      <td>500000</td>\n",
+              "      <td>5</td>\n",
+              "      <td>E-Wallet</td>\n",
+              "      <td>14/07/2026</td>\n",
+              "      <td>Blitar</td>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>TRX00500</td>\n",
+              "      <td>Cut Maya Wijayanti</td>\n",
+              "      <td>Delectus Lite</td>\n",
+              "      <td>Olahraga</td>\n",
+              "      <td>1200000</td>\n",
+              "      <td>5</td>\n",
+              "      <td>COD</td>\n",
+              "      <td>10-07-2026</td>\n",
+              "      <td>Lubuklinggau</td>\n",
+              "      <td>2.0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>TRX00442</td>\n",
+              "      <td>Dr. Ridwan Utama, M.Pd</td>\n",
+              "      <td>Animi Basic</td>\n",
+              "      <td>Kesehatan</td>\n",
+              "      <td>Rp250.000</td>\n",
+              "      <td>2</td>\n",
+              "      <td>COD</td>\n",
+              "      <td>2026-08-26</td>\n",
+              "      <td>Probolinggo</td>\n",
+              "      <td>3.0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>TRX00154</td>\n",
+              "      <td>Viman Suwarno, S.H.</td>\n",
+              "      <td>Consectetur Basic</td>\n",
+              "      <td>FASHION</td>\n",
+              "      <td>Rp75.000</td>\n",
+              "      <td>2</td>\n",
+              "      <td>COD</td>\n",
+              "      <td>2026-07-28</td>\n",
+              "      <td>Tual</td>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>TRX00074</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>Eius Max</td>\n",
+              "      <td>Fashion</td>\n",
+              "      <td>25000.0</td>\n",
+              "      <td>2</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>2026-07-02</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>3.0</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-f6cc00b5-46d2-4f1c-b2a0-e00fccd8ce02')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-f6cc00b5-46d2-4f1c-b2a0-e00fccd8ce02 button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-f6cc00b5-46d2-4f1c-b2a0-e00fccd8ce02');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "variable_name": "df",
+              "summary": "{\n  \"name\": \"df\",\n  \"rows\": 515,\n  \"fields\": [\n    {\n      \"column\": \"transaction_id\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 500,\n        \"samples\": [\n          \"TRX00293\",\n          \"TRX00102\",\n          \"TRX00379\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"customer_name\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 490,\n        \"samples\": [\n          \"Ir. Cawuk Halimah\",\n          \"Radit Santoso, S.Ked\",\n          \"Unggul Utami\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"product_name\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 362,\n        \"samples\": [\n          \"Odit Max\",\n          \"Ut Lite\",\n          \"Et Lite\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"category\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 12,\n        \"samples\": [\n          \"Buku\",\n          \"OLAHRAGA \",\n          \"Fashion\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"price\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 32,\n        \"samples\": [\n          \"500000\",\n          \" 50000 \",\n          \" 250000 \"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"quantity\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 1,\n        \"min\": 1,\n        \"max\": 5,\n        \"num_unique_values\": 5,\n        \"samples\": [\n          2,\n          3,\n          4\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"payment_method\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 8,\n        \"samples\": [\n          \"COD\",\n          \"kartu kredit\",\n          \"E-Wallet\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"transaction_date\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 226,\n        \"samples\": [\n          \"12/09/2026\",\n          \"21-08-2026\",\n          \"2026-06-26\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"shipping_city\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 98,\n        \"samples\": [\n          \"Cimahi\",\n          \"Pontianak\",\n          \"Pagaralam\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"rating\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 1.3618923926359567,\n        \"min\": 1.0,\n        \"max\": 5.0,\n        \"num_unique_values\": 5,\n        \"samples\": [\n          3.0,\n          4.0,\n          5.0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {},
+          "execution_count": 7
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.to_csv(DIR_SIMPAN + \"/transaksi_mentah_seed42.csv\", index=False)\n",
+        "print(\"Data mentah seed 42 tersimpan:\", len(df), \"baris\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xK5Dp6hG9PCY",
+        "outputId": "5843f44b-eb96-4cff-ed30-f262429d1d60"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Data mentah seed 42 tersimpan: 515 baris\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-3. Deteksi Missing Value"
+      ],
+      "metadata": {
+        "id": "PeLORPGiHPKy"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(df.isnull().sum())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "JUbnPwWwHPqi",
+        "outputId": "32561bd6-e87e-4ee3-c5dc-b864d71f0b98"
+      },
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "transaction_id        0\n",
+            "customer_name        20\n",
+            "product_name          0\n",
+            "category              0\n",
+            "price                 0\n",
+            "quantity              0\n",
+            "payment_method       16\n",
+            "transaction_date      0\n",
+            "shipping_city        30\n",
+            "rating              158\n",
+            "dtype: int64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df = df.dropna(subset=[\"customer_name\", \"payment_method\"])\n",
+        "df[\"shipping_city\"] = df[\"shipping_city\"].fillna(\"Tidak Diketahui\")"
+      ],
+      "metadata": {
+        "id": "oXy5TgkuHTzq"
+      },
+      "execution_count": 10,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-4. Deteksi & Penanganan Duplicate"
+      ],
+      "metadata": {
+        "id": "ZvdyciP1HYEC"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Baris duplicate (semua kolom sama):\", df.duplicated().sum())\n",
+        "print(\"transaction_id duplicate:\", df['transaction_id'].duplicated().sum())\n",
+        "\n",
+        "df = df.drop_duplicates()\n",
+        "print(\"Jumlah baris setelah drop_duplicates():\", len(df))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "X7BQjI10HYmK",
+        "outputId": "7d642e9b-32e8-4657-e515-cc92cf4756f4"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Baris duplicate (semua kolom sama): 5\n",
+            "transaction_id duplicate: 5\n",
+            "Jumlah baris setelah drop_duplicates(): 490\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-5. Koreksi Tipe Data & Standardisasi"
+      ],
+      "metadata": {
+        "id": "ECzn8FFUICwq"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "a. Standardisasi teks"
+      ],
+      "metadata": {
+        "id": "jwptizsnIEwS"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for col in [\"category\", \"payment_method\", \"shipping_city\"]:\n",
+        "    df[col] = df[col].astype(\"string\").str.strip().str.title()\n",
+        "\n",
+        "# \"Cod\" adalah singkatan; kembalikan ke huruf kapital penuh setelah Title Case\n",
+        "df[\"payment_method\"] = df[\"payment_method\"].replace({\"Cod\": \"COD\"})"
+      ],
+      "metadata": {
+        "id": "RXsOFM85IDJy"
+      },
+      "execution_count": 12,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "b. Membersihkan price"
+      ],
+      "metadata": {
+        "id": "ZKBkglmxIIDE"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def bersihkan_harga(x):\n",
+        "    if pd.isna(x):\n",
+        "        return np.nan\n",
+        "    x = str(x).strip().replace(\"Rp\", \"\").replace(\".\", \"\").replace(\",\", \".\")\n",
+        "    try:\n",
+        "        return float(x)\n",
+        "    except ValueError:\n",
+        "        return np.nan\n",
+        "\n",
+        "df[\"price\"] = df[\"price\"].apply(bersihkan_harga)"
+      ],
+      "metadata": {
+        "id": "m_xPPyoqIIbC"
+      },
+      "execution_count": 13,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "c. Standardisasi tanggal"
+      ],
+      "metadata": {
+        "id": "jEw9s0UsISLi"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def parse_tanggal(x):\n",
+        "    for fmt in (\"%Y-%m-%d\", \"%d/%m/%Y\", \"%d-%m-%Y\"):\n",
+        "        try:\n",
+        "            return pd.to_datetime(x, format=fmt)\n",
+        "        except ValueError:\n",
+        "            continue\n",
+        "    return pd.NaT\n",
+        "\n",
+        "df[\"transaction_date\"] = df[\"transaction_date\"].apply(parse_tanggal).dt.strftime(\"%Y-%m-%d\")"
+      ],
+      "metadata": {
+        "id": "I2Ti6JY5ISpy"
+      },
+      "execution_count": 14,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "d. Finalisasi tipe data"
+      ],
+      "metadata": {
+        "id": "CsS3l2FZIXu0"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df[\"quantity\"] = df[\"quantity\"].astype(int)\n",
+        "df[\"price\"] = df[\"price\"].astype(float)"
+      ],
+      "metadata": {
+        "id": "eU9DukMWIYNb"
+      },
+      "execution_count": 15,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-6. Export Dataset Bersih"
+      ],
+      "metadata": {
+        "id": "oiIhS2OWIf9r"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.to_csv(\"transaksi_bersih.csv\", index=False)\n",
+        "print(\"Dataset bersih tersimpan:\", len(df), \"baris\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "wP7mqwzXIgTS",
+        "outputId": "3ce00b8a-7122-4071-b7ef-3419c80d3e12"
+      },
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Dataset bersih tersimpan: 490 baris\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.head()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "IJsUpYG_SKaO",
+        "outputId": "198fe1a2-48fc-42bf-ddfb-5e9f2394e53d"
+      },
+      "execution_count": 17,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "  transaction_id           customer_name       product_name   category  \\\n",
+              "0       TRX00305         Ophelia Hartati            Quo Max    Fashion   \n",
+              "1       TRX00500      Cut Maya Wijayanti      Delectus Lite   Olahraga   \n",
+              "2       TRX00442  Dr. Ridwan Utama, M.Pd        Animi Basic  Kesehatan   \n",
+              "3       TRX00154     Viman Suwarno, S.H.  Consectetur Basic    Fashion   \n",
+              "5       TRX00132      Ir. Ilyas Setiawan      Ducimus Basic   Olahraga   \n",
+              "\n",
+              "       price  quantity payment_method transaction_date shipping_city  rating  \n",
+              "0   500000.0         5       E-Wallet       2026-07-14        Blitar     NaN  \n",
+              "1  1200000.0         5            COD       2026-07-10  Lubuklinggau     2.0  \n",
+              "2   250000.0         2            COD       2026-08-26   Probolinggo     3.0  \n",
+              "3    75000.0         2            COD       2026-07-28          Tual     NaN  \n",
+              "5   150000.0         5       E-Wallet       2026-09-16  Subulussalam     3.0  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-f4fb81b4-e903-4acb-9496-38c58d02dfb8\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>transaction_id</th>\n",
+              "      <th>customer_name</th>\n",
+              "      <th>product_name</th>\n",
+              "      <th>category</th>\n",
+              "      <th>price</th>\n",
+              "      <th>quantity</th>\n",
+              "      <th>payment_method</th>\n",
+              "      <th>transaction_date</th>\n",
+              "      <th>shipping_city</th>\n",
+              "      <th>rating</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>TRX00305</td>\n",
+              "      <td>Ophelia Hartati</td>\n",
+              "      <td>Quo Max</td>\n",
+              "      <td>Fashion</td>\n",
+              "      <td>500000.0</td>\n",
+              "      <td>5</td>\n",
+              "      <td>E-Wallet</td>\n",
+              "      <td>2026-07-14</td>\n",
+              "      <td>Blitar</td>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>TRX00500</td>\n",
+              "      <td>Cut Maya Wijayanti</td>\n",
+              "      <td>Delectus Lite</td>\n",
+              "      <td>Olahraga</td>\n",
+              "      <td>1200000.0</td>\n",
+              "      <td>5</td>\n",
+              "      <td>COD</td>\n",
+              "      <td>2026-07-10</td>\n",
+              "      <td>Lubuklinggau</td>\n",
+              "      <td>2.0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>TRX00442</td>\n",
+              "      <td>Dr. Ridwan Utama, M.Pd</td>\n",
+              "      <td>Animi Basic</td>\n",
+              "      <td>Kesehatan</td>\n",
+              "      <td>250000.0</td>\n",
+              "      <td>2</td>\n",
+              "      <td>COD</td>\n",
+              "      <td>2026-08-26</td>\n",
+              "      <td>Probolinggo</td>\n",
+              "      <td>3.0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>TRX00154</td>\n",
+              "      <td>Viman Suwarno, S.H.</td>\n",
+              "      <td>Consectetur Basic</td>\n",
+              "      <td>Fashion</td>\n",
+              "      <td>75000.0</td>\n",
+              "      <td>2</td>\n",
+              "      <td>COD</td>\n",
+              "      <td>2026-07-28</td>\n",
+              "      <td>Tual</td>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>5</th>\n",
+              "      <td>TRX00132</td>\n",
+              "      <td>Ir. Ilyas Setiawan</td>\n",
+              "      <td>Ducimus Basic</td>\n",
+              "      <td>Olahraga</td>\n",
+              "      <td>150000.0</td>\n",
+              "      <td>5</td>\n",
+              "      <td>E-Wallet</td>\n",
+              "      <td>2026-09-16</td>\n",
+              "      <td>Subulussalam</td>\n",
+              "      <td>3.0</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-f4fb81b4-e903-4acb-9496-38c58d02dfb8')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-f4fb81b4-e903-4acb-9496-38c58d02dfb8 button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-f4fb81b4-e903-4acb-9496-38c58d02dfb8');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "variable_name": "df",
+              "summary": "{\n  \"name\": \"df\",\n  \"rows\": 490,\n  \"fields\": [\n    {\n      \"column\": \"transaction_id\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 490,\n        \"samples\": [\n          \"TRX00475\",\n          \"TRX00204\",\n          \"TRX00167\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"customer_name\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 490,\n        \"samples\": [\n          \"Ir. Cawuk Halimah\",\n          \"Radit Santoso, S.Ked\",\n          \"Unggul Utami\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"product_name\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 357,\n        \"samples\": [\n          \"Nesciunt Max\",\n          \"Modi Basic\",\n          \"Necessitatibus Lite\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"category\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 6,\n        \"samples\": [\n          \"Fashion\",\n          \"Olahraga\",\n          \"Elektronik\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"price\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 2215225.623836238,\n        \"min\": 15000.0,\n        \"max\": 12000000.0,\n        \"num_unique_values\": 13,\n        \"samples\": [\n          2500000.0,\n          120000.0,\n          500000.0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"quantity\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 1,\n        \"min\": 1,\n        \"max\": 5,\n        \"num_unique_values\": 5,\n        \"samples\": [\n          2,\n          3,\n          4\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"payment_method\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 4,\n        \"samples\": [\n          \"COD\",\n          \"Transfer Bank\",\n          \"E-Wallet\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"transaction_date\",\n      \"properties\": {\n        \"dtype\": \"object\",\n        \"num_unique_values\": 90,\n        \"samples\": [\n          \"2026-07-06\",\n          \"2026-07-27\",\n          \"2026-08-05\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"shipping_city\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 99,\n        \"samples\": [\n          \"Bukittinggi\",\n          \"Jayapura\",\n          \"Pagaralam\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"rating\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 1.3668344815569378,\n        \"min\": 1.0,\n        \"max\": 5.0,\n        \"num_unique_values\": 5,\n        \"samples\": [\n          3.0,\n          4.0,\n          5.0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {},
+          "execution_count": 17
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.to_csv(DIR_SIMPAN + \"/transaksi_bersih_seed42.csv\", index=False)\n",
+        "print(\"Data bersih seed 42 tersimpan:\", len(df), \"baris\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "PStuilBS98w3",
+        "outputId": "4c976393-04be-4703-c7b8-d612d66ffae1"
+      },
+      "execution_count": 18,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Data bersih seed 42 tersimpan: 490 baris\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## **STUDI KASUS**"
+      ],
+      "metadata": {
+        "id": "D_PccKsR5X7P"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### P. Studi Kasus\n",
+        "\n",
+        "**1. Mengapa jumlah transaksi yang dilaporkan tim IT (515) berbeda dengan jumlah yang digunakan tim Finance (490)?**\n",
+        "\n",
+        "Perbedaan tersebut terjadi karena data mentah sebanyak 515 baris masih mengandung masalah kualitas data. Berdasarkan proses preprocessing, terdapat 15 baris duplicate yang dihapus dan 10 baris yang memiliki missing value pada kolom wajib, yaitu `customer_name` atau `payment_method`. Setelah proses tersebut, jumlah data menjadi 490 baris.\n",
+        "\n",
+        "**2. Apakah 490 baris “lebih benar” dibandingkan 515 baris? Jelaskan dengan konsep Veracity.**\n",
+        "\n",
+        "490 baris bukan berarti secara mutlak lebih benar, tetapi merupakan data yang lebih layak digunakan untuk analisis karena telah melalui proses pembersihan. Hal ini berkaitan dengan konsep **Veracity**, yaitu tingkat kepercayaan dan kualitas data. Data 515 baris masih mengandung duplicate dan missing value, sehingga jika langsung digunakan dapat menghasilkan analisis yang kurang dapat dipercaya.\n",
+        "\n",
+        "**3. Bagaimana menjelaskan keputusan membiarkan missing value pada kolom rating?**\n",
+        "\n",
+        "Kolom `rating` dibiarkan memiliki missing value karena rating merupakan informasi opsional dan pembeli tidak wajib memberikan rating. Mengisi nilai yang kosong dengan angka tebakan dapat mendistorsi hasil analisis. Oleh karena itu, ketika menghitung rata-rata rating, hanya data rating yang tersedia yang sebaiknya digunakan dan jumlah data yang memiliki rating perlu diperhatikan.\n"
+      ],
+      "metadata": {
+        "id": "6ltkw0ow5fHx"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## **LATIHAN**"
+      ],
+      "metadata": {
+        "id": "LRLiINg3-VBx"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Latihan 1 — Perbandingan SEED 42 dan SEED 7"
+      ],
+      "metadata": {
+        "id": "tsRGlpJY-XK4"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-2 SEED 7"
+      ],
+      "metadata": {
+        "id": "kx3oZOe-_M-X"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "SEED = 7\n",
+        "np.random.seed(SEED)\n",
+        "random.seed(SEED)\n",
+        "fake = Faker(\"id_ID\")\n",
+        "Faker.seed(SEED)\n",
+        "\n",
+        "N = 500\n",
+        "kategori_produk = [\"Elektronik\", \"Fashion\", \"Kesehatan\", \"Rumah Tangga\", \"Olahraga\", \"Buku\"]\n",
+        "metode_bayar = [\"Transfer Bank\", \"E-Wallet\", \"COD\", \"Kartu Kredit\"]\n",
+        "\n",
+        "rows = []\n",
+        "\n",
+        "for i in range(1, N + 1):\n",
+        "    trx_id = f\"TRX{i:05d}\"\n",
+        "    nama_pelanggan = fake.name()\n",
+        "    produk = fake.word().capitalize() + \" \" + random.choice([\"Pro\", \"Lite\", \"Max\", \"Basic\"])\n",
+        "    kategori = random.choice(kategori_produk)\n",
+        "    harga_dasar = random.choice([15000, 25000, 50000, 75000, 120000, 250000, 500000, 1200000])\n",
+        "    qty = random.randint(1, 5)\n",
+        "\n",
+        "    harga_variants = [\n",
+        "        str(harga_dasar),\n",
+        "        f\"Rp{harga_dasar:,}\".replace(\",\", \".\"),\n",
+        "        f\"{harga_dasar}.0\",\n",
+        "        f\" {harga_dasar} \"\n",
+        "    ]\n",
+        "    harga = random.choice(harga_variants)\n",
+        "\n",
+        "    tgl = fake.date_between(start_date=\"-90d\", end_date=\"today\")\n",
+        "    tgl_variants = [\n",
+        "        tgl.strftime(\"%Y-%m-%d\"),\n",
+        "        tgl.strftime(\"%d/%m/%Y\"),\n",
+        "        tgl.strftime(\"%d-%m-%Y\")\n",
+        "    ]\n",
+        "    tanggal = random.choice(tgl_variants)\n",
+        "\n",
+        "    metode = random.choice(metode_bayar)\n",
+        "\n",
+        "    if random.random() < 0.3:\n",
+        "        metode = metode.lower()\n",
+        "\n",
+        "    if random.random() < 0.2:\n",
+        "        kategori = kategori.upper() + \" \"\n",
+        "\n",
+        "    kota = fake.city()\n",
+        "    rating = random.choice([1, 2, 3, 4, 5, None, None])\n",
+        "\n",
+        "    rows.append({\n",
+        "        \"transaction_id\": trx_id,\n",
+        "        \"customer_name\": nama_pelanggan,\n",
+        "        \"product_name\": produk.strip(),\n",
+        "        \"category\": kategori,\n",
+        "        \"price\": harga,\n",
+        "        \"quantity\": qty,\n",
+        "        \"payment_method\": metode,\n",
+        "        \"transaction_date\": tanggal,\n",
+        "        \"shipping_city\": kota,\n",
+        "        \"rating\": rating\n",
+        "    })\n",
+        "\n",
+        "df = pd.DataFrame(rows)\n",
+        "\n",
+        "for col, frac in [\n",
+        "    (\"customer_name\", 0.02),\n",
+        "    (\"shipping_city\", 0.03),\n",
+        "    (\"payment_method\", 0.015)\n",
+        "]:\n",
+        "    idx = df.sample(frac=frac, random_state=SEED).index\n",
+        "    df.loc[idx, col] = np.nan\n",
+        "\n",
+        "dup_rows = df.sample(n=15, random_state=SEED)\n",
+        "df = pd.concat([df, dup_rows], ignore_index=True)\n",
+        "df = df.sample(frac=1, random_state=SEED).reset_index(drop=True)\n",
+        "\n",
+        "print(\"SEED:\", SEED)\n",
+        "print(\"Jumlah baris:\", len(df))\n",
+        "df.head()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 241
+        },
+        "id": "nr3Ya1bBBFp9",
+        "outputId": "0e566dd1-9052-46f9-d138-7a07aca1111a"
+      },
+      "execution_count": 31,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "SEED: 7\n",
+            "Jumlah baris: 515\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "  transaction_id              customer_name      product_name      category  \\\n",
+              "0       TRX00490  Baktiadi Napitupulu, S.H.  Aspernatur Basic     Kesehatan   \n",
+              "1       TRX00430              Faizah Kusumo  Voluptates Basic       Fashion   \n",
+              "2       TRX00083    Drs. Sari Aryani, M.TI.     Deserunt Lite  Rumah Tangga   \n",
+              "3       TRX00121        Ilsa Mahendra, S.T.         Quia Lite    Elektronik   \n",
+              "4       TRX00222                        NaN        Magnam Pro    Elektronik   \n",
+              "\n",
+              "       price  quantity payment_method transaction_date      shipping_city  \\\n",
+              "0    75000.0         2   kartu kredit       13-09-2026            Bau-Bau   \n",
+              "1   120000.0         3       e-wallet       16-07-2026            Cilegon   \n",
+              "2   500000.0         1   Kartu Kredit       2026-09-08  Tangerang Selatan   \n",
+              "3      25000         5       E-Wallet       2026-08-15           Bengkulu   \n",
+              "4  Rp500.000         4            cod       27-06-2026                NaN   \n",
+              "\n",
+              "   rating  \n",
+              "0     NaN  \n",
+              "1     2.0  \n",
+              "2     1.0  \n",
+              "3     NaN  \n",
+              "4     3.0  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-54798e27-fa4c-451b-aff1-5d52d256a976\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>transaction_id</th>\n",
+              "      <th>customer_name</th>\n",
+              "      <th>product_name</th>\n",
+              "      <th>category</th>\n",
+              "      <th>price</th>\n",
+              "      <th>quantity</th>\n",
+              "      <th>payment_method</th>\n",
+              "      <th>transaction_date</th>\n",
+              "      <th>shipping_city</th>\n",
+              "      <th>rating</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>TRX00490</td>\n",
+              "      <td>Baktiadi Napitupulu, S.H.</td>\n",
+              "      <td>Aspernatur Basic</td>\n",
+              "      <td>Kesehatan</td>\n",
+              "      <td>75000.0</td>\n",
+              "      <td>2</td>\n",
+              "      <td>kartu kredit</td>\n",
+              "      <td>13-09-2026</td>\n",
+              "      <td>Bau-Bau</td>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>TRX00430</td>\n",
+              "      <td>Faizah Kusumo</td>\n",
+              "      <td>Voluptates Basic</td>\n",
+              "      <td>Fashion</td>\n",
+              "      <td>120000.0</td>\n",
+              "      <td>3</td>\n",
+              "      <td>e-wallet</td>\n",
+              "      <td>16-07-2026</td>\n",
+              "      <td>Cilegon</td>\n",
+              "      <td>2.0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>TRX00083</td>\n",
+              "      <td>Drs. Sari Aryani, M.TI.</td>\n",
+              "      <td>Deserunt Lite</td>\n",
+              "      <td>Rumah Tangga</td>\n",
+              "      <td>500000.0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>Kartu Kredit</td>\n",
+              "      <td>2026-09-08</td>\n",
+              "      <td>Tangerang Selatan</td>\n",
+              "      <td>1.0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>TRX00121</td>\n",
+              "      <td>Ilsa Mahendra, S.T.</td>\n",
+              "      <td>Quia Lite</td>\n",
+              "      <td>Elektronik</td>\n",
+              "      <td>25000</td>\n",
+              "      <td>5</td>\n",
+              "      <td>E-Wallet</td>\n",
+              "      <td>2026-08-15</td>\n",
+              "      <td>Bengkulu</td>\n",
+              "      <td>NaN</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>TRX00222</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>Magnam Pro</td>\n",
+              "      <td>Elektronik</td>\n",
+              "      <td>Rp500.000</td>\n",
+              "      <td>4</td>\n",
+              "      <td>cod</td>\n",
+              "      <td>27-06-2026</td>\n",
+              "      <td>NaN</td>\n",
+              "      <td>3.0</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-54798e27-fa4c-451b-aff1-5d52d256a976')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-54798e27-fa4c-451b-aff1-5d52d256a976 button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-54798e27-fa4c-451b-aff1-5d52d256a976');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "variable_name": "df",
+              "summary": "{\n  \"name\": \"df\",\n  \"rows\": 515,\n  \"fields\": [\n    {\n      \"column\": \"transaction_id\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 500,\n        \"samples\": [\n          \"TRX00321\",\n          \"TRX00119\",\n          \"TRX00167\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"customer_name\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 490,\n        \"samples\": [\n          \"Uli Novitasari\",\n          \"Rusman Permata\",\n          \"Kani Gunarto\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"product_name\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 362,\n        \"samples\": [\n          \"Nostrum Lite\",\n          \"Inventore Basic\",\n          \"Provident Lite\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"category\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 12,\n        \"samples\": [\n          \"OLAHRAGA \",\n          \"FASHION \",\n          \"Kesehatan\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"price\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 32,\n        \"samples\": [\n          \"50000\",\n          \"Rp75.000\",\n          \" 250000 \"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"quantity\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 1,\n        \"min\": 1,\n        \"max\": 5,\n        \"num_unique_values\": 5,\n        \"samples\": [\n          3,\n          4,\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"payment_method\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 8,\n        \"samples\": [\n          \"e-wallet\",\n          \"COD\",\n          \"kartu kredit\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"transaction_date\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 234,\n        \"samples\": [\n          \"2026-06-26\",\n          \"06/07/2026\",\n          \"2026-08-24\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"shipping_city\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 99,\n        \"samples\": [\n          \"Kupang\",\n          \"Salatiga\",\n          \"Semarang\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"rating\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 1.374739052860959,\n        \"min\": 1.0,\n        \"max\": 5.0,\n        \"num_unique_values\": 5,\n        \"samples\": [\n          1.0,\n          4.0,\n          3.0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {},
+          "execution_count": 31
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df.to_csv(DIR_SIMPAN + \"/transaksi_mentah_seed7.csv\", index=False)\n",
+        "print(\"Data mentah seed 7 tersimpan:\", len(df), \"baris\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "VYf-cH0yBS6B",
+        "outputId": "010423dd-42b3-4ac8-c8c1-7fd662daacbe"
+      },
+      "execution_count": 32,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Data mentah seed 7 tersimpan: 515 baris\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-3 SEED 7"
+      ],
+      "metadata": {
+        "id": "uY-N-bMY_cYi"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(df.isnull().sum())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "j4tsQ3t-BfDt",
+        "outputId": "aeca5acf-5e96-4cfd-fe28-a86ce48ace98"
+      },
+      "execution_count": 33,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "transaction_id        0\n",
+            "customer_name        20\n",
+            "product_name          0\n",
+            "category              0\n",
+            "price                 0\n",
+            "quantity              0\n",
+            "payment_method       16\n",
+            "transaction_date      0\n",
+            "shipping_city        30\n",
+            "rating              142\n",
+            "dtype: int64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df = df.dropna(subset=[\"customer_name\", \"payment_method\"])\n",
+        "df[\"shipping_city\"] = df[\"shipping_city\"].fillna(\"Tidak Diketahui\")\n",
+        "\n",
+        "print(\"Jumlah baris setelah penanganan missing value:\", len(df))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "_8rAMLAoBi7s",
+        "outputId": "a45633ff-b00b-4af7-b916-01c10a6fdf00"
+      },
+      "execution_count": 34,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Jumlah baris setelah penanganan missing value: 495\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-4 SEED 7"
+      ],
+      "metadata": {
+        "id": "OsC07opC_jhe"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Baris duplicate (semua kolom sama):\", df.duplicated().sum())\n",
+        "print(\"transaction_id duplicate:\", df[\"transaction_id\"].duplicated().sum())\n",
+        "\n",
+        "df = df.drop_duplicates()\n",
+        "\n",
+        "print(\"Jumlah baris setelah drop_duplicates():\", len(df))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "qruVzf7DBt1i",
+        "outputId": "adab3fe1-2e5b-4c24-cf5b-337d5c34ba4c"
+      },
+      "execution_count": 35,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Baris duplicate (semua kolom sama): 5\n",
+            "transaction_id duplicate: 5\n",
+            "Jumlah baris setelah drop_duplicates(): 490\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-5 SEED 7"
+      ],
+      "metadata": {
+        "id": "610eh54W_uwq"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for col in [\"category\", \"payment_method\", \"shipping_city\"]:\n",
+        "    df[col] = df[col].astype(\"string\").str.strip().str.title()\n",
+        "\n",
+        "df[\"payment_method\"] = df[\"payment_method\"].replace({\"Cod\": \"COD\"})"
+      ],
+      "metadata": {
+        "id": "ZaL7YbKvB_kz"
+      },
+      "execution_count": 36,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def bersihkan_harga(x):\n",
+        "    if pd.isna(x):\n",
+        "        return np.nan\n",
+        "\n",
+        "    x = str(x).strip().replace(\"Rp\", \"\").replace(\".\", \"\").replace(\",\", \".\")\n",
+        "    try:\n",
+        "        return float(x)\n",
+        "    except ValueError:\n",
+        "        return np.nan\n",
+        "\n",
+        "df[\"price\"] = df[\"price\"].apply(bersihkan_harga)"
+      ],
+      "metadata": {
+        "id": "QVXPNdyWCGHd"
+      },
+      "execution_count": 37,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def parse_tanggal(x):\n",
+        "    if pd.isna(x):\n",
+        "        return pd.NaT\n",
+        "\n",
+        "    x = str(x).strip()\n",
+        "\n",
+        "    for fmt in (\"%Y-%m-%d\", \"%d/%m/%Y\", \"%d-%m-%Y\"):\n",
+        "        try:\n",
+        "            return pd.to_datetime(x, format=fmt)\n",
+        "        except ValueError:\n",
+        "            pass\n",
+        "\n",
+        "    return pd.NaT\n",
+        "\n",
+        "df[\"transaction_date\"] = df[\"transaction_date\"].apply(parse_tanggal)\n",
+        "df[\"transaction_date\"] = df[\"transaction_date\"].dt.strftime(\"%Y-%m-%d\")"
+      ],
+      "metadata": {
+        "id": "XKGDgJ8aCIbx"
+      },
+      "execution_count": 38,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df[\"quantity\"] = df[\"quantity\"].astype(int)\n",
+        "df[\"price\"] = df[\"price\"].astype(float)"
+      ],
+      "metadata": {
+        "id": "5lLEkUA7CLLJ"
+      },
+      "execution_count": 39,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "K-6 SEED 7"
+      ],
+      "metadata": {
+        "id": "v0OcYnoPAg_9"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Jumlah baris data bersih:\", len(df))\n",
+        "print(\"Jumlah missing value:\")\n",
+        "print(df.isnull().sum())\n",
+        "\n",
+        "df.to_csv(DIR_SIMPAN + \"/transaksi_bersih_seed7.csv\", index=False)\n",
+        "\n",
+        "print(\"Data bersih seed 7 tersimpan:\", len(df), \"baris\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xKc9QqlQCS-d",
+        "outputId": "935c92dd-253e-4b86-e554-57cf2dfe9f08"
+      },
+      "execution_count": 40,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Jumlah baris data bersih: 490\n",
+            "Jumlah missing value:\n",
+            "transaction_id        0\n",
+            "customer_name         0\n",
+            "product_name          0\n",
+            "category              0\n",
+            "price                 0\n",
+            "quantity              0\n",
+            "payment_method        0\n",
+            "transaction_date      0\n",
+            "shipping_city         0\n",
+            "rating              137\n",
+            "dtype: int64\n",
+            "Data bersih seed 7 tersimpan: 490 baris\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "cek isi seed 7"
+      ],
+      "metadata": {
+        "id": "Jiy6XCliC5zb"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"SEED 7:\")\n",
+        "print(df.head())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ODfzEiTbCnC1",
+        "outputId": "32726e82-849c-4e15-9927-9db94534a364"
+      },
+      "execution_count": 41,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "SEED 7:\n",
+            "  transaction_id              customer_name      product_name      category  \\\n",
+            "0       TRX00490  Baktiadi Napitupulu, S.H.  Aspernatur Basic     Kesehatan   \n",
+            "1       TRX00430              Faizah Kusumo  Voluptates Basic       Fashion   \n",
+            "2       TRX00083    Drs. Sari Aryani, M.TI.     Deserunt Lite  Rumah Tangga   \n",
+            "3       TRX00121        Ilsa Mahendra, S.T.         Quia Lite    Elektronik   \n",
+            "5       TRX00148          Cahyanto Agustina       Officia Pro      Olahraga   \n",
+            "\n",
+            "       price  quantity payment_method transaction_date      shipping_city  \\\n",
+            "0   750000.0         2   Kartu Kredit       2026-09-13            Bau-Bau   \n",
+            "1  1200000.0         3       E-Wallet       2026-07-16            Cilegon   \n",
+            "2  5000000.0         1   Kartu Kredit       2026-09-08  Tangerang Selatan   \n",
+            "3    25000.0         5       E-Wallet       2026-08-15           Bengkulu   \n",
+            "5    75000.0         3            COD       2026-08-13   Tidore Kepulauan   \n",
+            "\n",
+            "   rating  \n",
+            "0     NaN  \n",
+            "1     2.0  \n",
+            "2     1.0  \n",
+            "3     NaN  \n",
+            "5     NaN  \n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Latihan 2 — Tambahkan is_valid_price"
+      ],
+      "metadata": {
+        "id": "KCxALX8yDVqr"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "df[\"is_valid_price\"] = df[\"price\"] > 0\n",
+        "\n",
+        "print(\"Pemeriksaan harga tidak valid:\")\n",
+        "print(df[\"is_valid_price\"].value_counts())\n",
+        "\n",
+        "print(\"\\nJumlah harga tidak valid:\", (~df[\"is_valid_price\"]).sum())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-T73FoVHDjHl",
+        "outputId": "86ebe5e3-3115-4004-f564-999e308d2c9c"
+      },
+      "execution_count": 42,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Pemeriksaan harga tidak valid:\n",
+            "is_valid_price\n",
+            "True    490\n",
+            "Name: count, dtype: int64\n",
+            "\n",
+            "Jumlah harga tidak valid: 0\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Latihan 3 — Jumlah Transaksi per Category"
+      ],
+      "metadata": {
+        "id": "s_UIdsMKEEaZ"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(\"Jumlah transaksi per kategori:\")\n",
+        "print(df[\"category\"].value_counts())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "o4JQCd7LEGfm",
+        "outputId": "c97b3336-4fc6-4690-9374-91ad2fb0ed1f"
+      },
+      "execution_count": 43,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Jumlah transaksi per kategori:\n",
+            "category\n",
+            "Rumah Tangga    104\n",
+            "Buku             94\n",
+            "Fashion          78\n",
+            "Elektronik       76\n",
+            "Kesehatan        71\n",
+            "Olahraga         67\n",
+            "Name: count, dtype: Int64\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
